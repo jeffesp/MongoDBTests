@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver;
 using MongoDBTests.Models;
@@ -8,13 +9,15 @@ namespace MongoDBTests
 {
     public class DbConnectedTest
     {
+        private string connection = ConfigurationManager.ConnectionStrings["mongolab"].ConnectionString;
+
         protected MongoCollection<Post> postCollection;
         protected List<int> postCounts;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            var client = new MongoClient("mongodb://admin:admin@ds062097.mongolab.com:62097/something");
+            var client = new MongoClient(connection);
             postCollection = client.GetServer().GetDatabase("something").GetCollection<Post>(Guid.NewGuid().ToString("N"));
             postCollection.RemoveAll();
 

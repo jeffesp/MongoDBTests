@@ -8,18 +8,8 @@ using MongoDBTests.Models;
 namespace MongoDBTests
 {
     [TestClass]
-    public class CRUD
+    public class CRUD : DbConnectedTest
     {
-        private MongoCollection<Post> postCollection;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            var client = new MongoClient("mongodb://admin:admin@ds062097.mongolab.com:62097/something");
-            postCollection = client.GetServer().GetDatabase("something").GetCollection<Post>("data");
-            postCollection.RemoveAll();
-        }
-
         [TestMethod]
         public void insert_new_document_given_id()
         {
