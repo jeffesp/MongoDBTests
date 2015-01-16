@@ -32,5 +32,21 @@ namespace MongoDBTests
             var posts = postCollection.AsQueryable().Where(p => p.Subject.StartsWith("Post 9"));
             Assert.AreEqual(11, posts.Count());
         }
+
+        [TestMethod]
+        public void where_subclass_is_queried()
+        {
+            var user5Posts = postCollection.AsQueryable().Where(p => p.PostedBy.Email == "user5@example.com");
+            Assert.AreEqual(posts.Where(p => p.PostedBy.Email == "user5@example.com").ToList().Count, user5Posts.ToList().Count);
+        }
+
+        [TestMethod]
+        [Ignore] // SelectMany isn't supported - I bet that MapReduce is what is needed here?
+        public void select_many_to_get_from_member_collection()
+        {
+            var user2Comments =
+                postCollection.AsQueryable()
+                    .SelectMany(p => p.Comments.Where(c => c.PostedBy.Username == "user2@example.com"));
+        }
     }
 }
