@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CollectionJoins.cs" />
     <Compile Include="Connections.cs" />
     <Compile Include="CRUD.cs" />
     <Compile Include="DbConnectedTest.cs" />

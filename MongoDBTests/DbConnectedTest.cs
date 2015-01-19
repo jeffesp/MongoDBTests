@@ -40,7 +40,7 @@ namespace MongoDBTests
         [TestCleanup]
         public void TestCleanup()
         {
-            //postCollection.Drop();
+            postCollection.Drop();
         }
 
         private void CreateComments()
