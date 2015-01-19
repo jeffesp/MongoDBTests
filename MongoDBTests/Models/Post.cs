@@ -11,10 +11,11 @@ namespace MongoDBTests.Models
             PostedBy = new User();
             Comments = new List<Comment>();
         }
+
         public ObjectId Id { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public int Count { get; set;  }
+        public int Count { get; set; }
         public User PostedBy { get; set; }
         public DateTime PostedOn { get; set; }
         public DateTime CreatedOn { get; set; }

@@ -13,7 +13,14 @@ namespace MongoDBTests
         [TestMethod]
         public void insert_new_document_given_id()
         {
-            var result = postCollection.Insert(new Post {Id = new ObjectId(), Subject = "Test", Body = "Test post body.", Count = 0});
+            WriteConcernResult result =
+                postCollection.Insert(new Post
+                {
+                    Id = new ObjectId(),
+                    Subject = "Test",
+                    Body = "Test post body.",
+                    Count = 0
+                });
             Assert.IsTrue(result.Ok);
         }
 
@@ -21,7 +28,7 @@ namespace MongoDBTests
         public void insert_new_document_autoid()
         {
             var post = new Post {Subject = "Test", Body = "Test post body.", Count = 0};
-            var result = postCollection.Insert(post);
+            WriteConcernResult result = postCollection.Insert(post);
             Assert.IsTrue(result.Ok);
             Assert.IsNotNull(post.Id);
         }
@@ -32,17 +39,19 @@ namespace MongoDBTests
             var post = new Post {Subject = "Test", Body = "Test post body.", Count = 0};
             postCollection.Insert(post);
             post.Subject = String.Format("{0} - Updated {1}", post.Subject, DateTime.Now);
-            var result = postCollection.Save(post); // will update all fields even if not changed.
+            WriteConcernResult result = postCollection.Save(post); // will update all fields even if not changed.
             Assert.IsTrue(result.Ok);
         }
+
         [TestMethod]
         public void update_existing_document_with_query()
         {
             var post = new Post {Subject = "Test", Body = "Test post body.", Count = 0};
             postCollection.Insert(post);
-            var query = Query<Post>.EQ(e => e.Id, post.Id);
-            var update = Update<Post>.Set(e => e.Subject, String.Format("{0} - Updated {1}", post.Subject, DateTime.Now)); 
-            var result = postCollection.Update(query, update); // will update only the Subject field
+            IMongoQuery query = Query<Post>.EQ(e => e.Id, post.Id);
+            UpdateBuilder<Post> update = Update<Post>.Set(e => e.Subject,
+                String.Format("{0} - Updated {1}", post.Subject, DateTime.Now));
+            WriteConcernResult result = postCollection.Update(query, update); // will update only the Subject field
             Assert.IsTrue(result.Ok);
         }
 
@@ -51,8 +60,8 @@ namespace MongoDBTests
         {
             var post = new Post {Subject = "Test", Body = "Test post body.", Count = 0};
             postCollection.Insert(post); // note that the post should have the Id set at this point.
-            var query = Query<Post>.EQ(e => e.Id, post.Id);
-            var result = postCollection.Remove(query, RemoveFlags.Single);
+            IMongoQuery query = Query<Post>.EQ(e => e.Id, post.Id);
+            WriteConcernResult result = postCollection.Remove(query, RemoveFlags.Single);
             Assert.IsTrue(result.Ok);
         }
     }

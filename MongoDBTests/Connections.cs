@@ -9,10 +9,11 @@ namespace MongoDBTests
     public class Connections
     {
         private readonly string connection = ConfigurationManager.ConnectionStrings["mongolab"].ConnectionString;
+
         [TestMethod]
         public void client_created()
         {
-            MongoClientSettings settings = new MongoClientSettings
+            var settings = new MongoClientSettings
             {
                 Server = new MongoServerAddress("ds062097.mongolab.com", 62079),
                 Credentials = new List<MongoCredential>
@@ -38,7 +39,7 @@ namespace MongoDBTests
         public void client_can_get_server_database()
         {
             var client = new MongoClient(connection);
-            var database = client.GetServer().GetDatabase("something");
+            MongoDatabase database = client.GetServer().GetDatabase("something");
             Assert.AreEqual("something", database.Name);
         }
 
@@ -46,7 +47,8 @@ namespace MongoDBTests
         public void client_can_get_document_collection()
         {
             var client = new MongoClient(connection);
-            var collection = client.GetServer().GetDatabase("data"); // note that "data" and "Data" are different collections
+            MongoDatabase collection = client.GetServer().GetDatabase("data");
+                // note that "data" and "Data" are different collections
             Assert.AreEqual("data", collection.Name);
         }
 
@@ -63,7 +65,7 @@ namespace MongoDBTests
             // docs say only to do if app is terminating, client maintains a collection pool internally so we don't 
             // have to worry about when to connect/disconnect
             var client = new MongoClient(connection);
-            var server = client.GetServer();
+            MongoServer server = client.GetServer();
             server.Disconnect();
 
             // assuming success without exception

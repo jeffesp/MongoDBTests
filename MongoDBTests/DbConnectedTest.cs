@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -16,19 +15,20 @@ namespace MongoDBTests
         private const int commentCount = postCount*3;
         private const int userCount = postCount/10;
 
-        private string connection = ConfigurationManager.ConnectionStrings["mongolab"].ConnectionString;
+        private readonly string connection = ConfigurationManager.ConnectionStrings["mongolab"].ConnectionString;
+        protected List<Comment> comments;
 
         protected MongoCollection<Post> postCollection;
         protected List<int> postCounts;
         protected List<Post> posts;
         protected List<User> users;
-        protected List<Comment> comments;
 
         [TestInitialize]
         public void TestInitialize()
         {
             var client = new MongoClient(connection);
-            postCollection = client.GetServer().GetDatabase("something").GetCollection<Post>(Guid.NewGuid().ToString("N"));
+            postCollection =
+                client.GetServer().GetDatabase("something").GetCollection<Post>(Guid.NewGuid().ToString("N"));
             postCollection.RemoveAll();
 
             CreatePostCounts();
@@ -82,7 +82,7 @@ namespace MongoDBTests
             var random = new Random();
             for (int i = 0; i < 100; i++)
             {
-                postCounts.Add(random.Next(0,100)); 
+                postCounts.Add(random.Next(0, 100));
             }
         }
 
