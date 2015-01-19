@@ -18,9 +18,7 @@ namespace MongoDBTests
         {
             var query = Query<Post>.GT(x => x.Count, postCounts.Count*0.9);
 
-            BsonDocument explainNoIndex = postCollection.Find(query).Explain(verbose: true);
-            Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
-            Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
+            VerifyUnindexedQuery(query);
 
             IndexKeysBuilder<Post> index = new IndexKeysBuilder<Post>();
             index.Descending(p => p.Count); 
@@ -38,9 +36,7 @@ namespace MongoDBTests
             var query = Query<Post>.GT(x => x.Count, postCounts.Count*0.9);
             var sort = SortBy<Post>.Descending(p => p.PostedOn);
 
-            BsonDocument explainNoIndex = postCollection.Find(query).SetSortOrder(sort).Explain(verbose: true);
-            Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
-            Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
+            VerifyUnindexedQuery(query);
             
             IndexKeysBuilder<Post> index = new IndexKeysBuilder<Post>();
             index.Descending(p => p.Count);
@@ -58,9 +54,7 @@ namespace MongoDBTests
         {
             var query = Query<Post>.EQ(x => x.Subject, "Post 10");
 
-            BsonDocument explainNoIndex = postCollection.Find(query).Explain(verbose: true);
-            Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
-            Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
+            VerifyUnindexedQuery(query);
 
             IndexKeysBuilder<Post> index = new IndexKeysBuilder<Post>();
             index.Ascending(p => p.Subject);
@@ -93,9 +87,7 @@ namespace MongoDBTests
         {
             var query = Query<Post>.EQ(x => x.PostedBy.Email, "user1@example.com");
 
-            BsonDocument explainNoIndex = postCollection.Find(query).Explain(verbose: true);
-            Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
-            Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
+            VerifyUnindexedQuery(query);
 
             IndexKeysBuilder<Post> index = new IndexKeysBuilder<Post>();
             index.Ascending(p => p.PostedBy.Email); 
@@ -120,5 +112,12 @@ namespace MongoDBTests
         }
 
         //TODO: actual full text indexing would require a real corpus
+
+        private void VerifyUnindexedQuery(IMongoQuery query)
+        {
+            BsonDocument explainNoIndex = postCollection.Find(query).Explain(verbose: true);
+            Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
+            Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
+        }
     }
 }
