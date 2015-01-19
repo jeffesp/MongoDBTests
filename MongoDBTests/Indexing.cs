@@ -110,20 +110,7 @@ namespace MongoDBTests
         [TestMethod]
         public void applies_index_on_inner_array_object()
         {
-            //var query = Query<Post>.EQ(x => x.Comments, "user1@example.com");
 
-            //BsonDocument explainNoIndex = postCollection.Find(query).Explain(verbose: true);
-            //Assert.AreEqual("BasicCursor", explainNoIndex["cursor"]);
-            //Assert.AreEqual(posts.Count, explainNoIndex["nscanned"]);
-
-            //IndexKeysBuilder<Post> index = new IndexKeysBuilder<Post>();
-            //index.Ascending(p => p.PostedBy.Email); 
-            //WriteConcernResult createResult = postCollection.CreateIndex(index);
-            //Assert.IsTrue(createResult.Ok);
-
-            //BsonDocument explain = postCollection.Find(query).Explain(verbose: true);
-            //Assert.AreEqual("BtreeCursor PostedBy.Email_1", explain["cursor"]);
-            //Assert.AreEqual(explain["nscanned"], (int)postCollection.Find(query).Count());
         }
 
         [TestMethod]
